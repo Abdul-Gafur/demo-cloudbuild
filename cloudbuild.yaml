@@ -17,3 +17,5 @@ steps:
             --zone "$zone" \
             --quiet
         done
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
