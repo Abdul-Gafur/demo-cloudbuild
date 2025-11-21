@@ -1,3 +1,5 @@
-Google Cloud Free Products
+1. Google Cloud Free Products
 https://cloud.google.com/free
 
+2. 1st gen and 2nd gen cloud build repositories
+https://docs.cloud.google.com/build/docs/repositories
