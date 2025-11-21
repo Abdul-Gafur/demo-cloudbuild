@@ -1,0 +1,19 @@
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        vmlist=$(gcloud compute instances list \
+          --format='value(name)' \
+          --filter="labels.${_VM_LABEL_KEY}:${_VM_LABEL_VALUE} AND status:RUNNING")
+
+        for vm in $vmlist; do
+          zone=$(gcloud compute instances list \
+            --format='value(zone)' \
+            --filter="name='$vm'")
+
+          gcloud compute ssh cloudbuild@$vm \
+            --zone "$zone" \
+            --quiet
+        done
