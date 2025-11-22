@@ -20,9 +20,9 @@ steps:
         chmod 600 id_rsa
 
         echo "Deploying to staging..."
-        scp -i id_rsa -o StrictHostKeyChecking=no index.html deploy@${_STAGING_VM_IP}:/tmp/
-        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_STAGING_VM_IP}:/tmp/
-        ssh -i id_rsa -o StrictHostKeyChecking=no deploy@${_STAGING_VM_IP} "bash /tmp/deploy.sh"
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html gafur@${_STAGING_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh gafur@${_STAGING_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no gafur@${_STAGING_VM_IP} "bash /tmp/deploy.sh"
     id: deploy-staging
 
   # Step 4: Deploy to Production
@@ -36,16 +36,16 @@ steps:
         chmod 600 id_rsa
 
         echo "Deploying to production..."
-        scp -i id_rsa -o StrictHostKeyChecking=no index.html deploy@${_PROD_VM_IP}:/tmp/
-        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_PROD_VM_IP}:/tmp/
-        ssh -i id_rsa -o StrictHostKeyChecking=no deploy@${_PROD_VM_IP} "bash /tmp/deploy.sh"
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html gafur@${_PROD_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh gafur@${_PROD_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no gafur@${_PROD_VM_IP} "bash /tmp/deploy.sh"
     id: deploy-prod
 
 # Define substitution variables (customize these per environment)
 substitutions:
   _STAGING_VM_IP: '136.114.30.253'      # Replace with your staging VM IP
   _PROD_VM_IP: '34.67.75.90'         # Replace with your production VM IP
-  _DEPLOY_USER: 'deploy'          # SSH username
+  _DEPLOY_USER: 'gafur'          # SSH username
   _APP_PATH: '/var/www/html'      # Apache web root
 
 # Build timeout
