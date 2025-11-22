@@ -1,9 +1,51 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
+  # Step 1: Validate HTML files
+  - name: 'ubuntu'
+    args: ['bash', '-c', 'echo "Validating HTML files..." && ls -la *.html']
+    id: 'validate'
+
+  # Step 2: Copy files to archive
+  - name: 'ubuntu'
+    args: ['tar', '-czf', 'website.tar.gz', 'index.html', 'deploy.sh', '*.html']
+    id: 'archive'
+
+  # Step 3: Deploy to Staging VM
+  - name: 'ubuntu'
+    entrypoint: 'bash'
     args:
       - '-c'
-      - >
-        vmlist=$(gcloud compute instances list --format='value(name)' --filter="labels.${_VM_LABEL_KEY}:${_VM_LABEL_VALUE} AND status:RUNNING") && for vm in $vmlist; do gcloud compute ssh cloudbuild@$vm --zone $(gcloud compute instances list --format='value(zone)' --filter="name='$vm'") --quiet -- 'gsutil cp gs://vmstartup0299394/startup.sh . && sudo chmod +x startup.sh && sudo sh startup.sh'; done
-    entrypoint: bash
+      - |
+        chmod 600 /workspace/id_rsa
+        echo "Deploying to staging..."
+        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no -r index.html deploy@${_STAGING_VM_IP}:/tmp/
+        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_STAGING_VM_IP}:/tmp/
+        ssh -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy@${_STAGING_VM_IP} 'bash /tmp/deploy.sh'
+    id: 'deploy-staging'
+
+  # Step 4: Deploy to Production VM
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        chmod 600 /workspace/id_rsa
+        echo "Deploying to production..."
+        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no -r index.html deploy@${_PROD_VM_IP}:/tmp/
+        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_PROD_VM_IP}:/tmp/
+        ssh -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy@${_PROD_VM_IP} 'bash /tmp/deploy.sh'
+    id: 'deploy-prod'
+
+# Define substitution variables (customize these per environment)
+substitutions:
+  _STAGING_VM_IP: '34.68.88.54'      # Replace with your staging VM IP
+  _PROD_VM_IP: '34.67.75.90'         # Replace with your production VM IP
+  _DEPLOY_USER: 'deploy'          # SSH username
+  _APP_PATH: '/var/www/html'      # Apache web root
+
+# Build timeout
+timeout: '1800s'
+
+# Options
 options:
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  # machineType: 'N1_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY

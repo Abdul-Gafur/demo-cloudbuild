@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Build <i class="fas fa-democrat    "></i></title>
+    <title>Cloud Build CI/CD Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .status { color: green; font-weight: bold; }
+        .info { background-color: #f0f0f0; padding: 20px; border-radius: 5px; }
+    </style>
 </head>
 <body>
-    <h1></h1>
+    <div class="container">
+        <h1>Welcome to Cloud Build CI/CD Pipeline</h1>
+        <p class="status">✓ Application deployed successfully!</p>
+        
+        <div class="info">
+            <h2>Deployment Information</h2>
+            <p><strong>Environment:</strong> Production</p>
+            <p><strong>Server:</strong> Apache Web Server</p>
+            <p><strong>Deployed:</strong> Automated via Cloud Build</p>
+        </div>
+        
+        <h2>Health Check</h2>
+        <p>This page is being served by Apache on your Compute Engine VM.</p>
+    </div>
 </body>
 </html>
