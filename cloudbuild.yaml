@@ -20,9 +20,9 @@ steps:
         chmod 600 id_rsa
 
         echo "Deploying to staging..."
-        scp -i id_rsa -o StrictHostKeyChecking=no index.html gafur@${_STAGING_VM_IP}:/tmp/
-        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh gafur@${_STAGING_VM_IP}:/tmp/
-        ssh -i id_rsa -o StrictHostKeyChecking=no gafur@${_STAGING_VM_IP} "bash /tmp/deploy.sh"
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html abdulgafurshaattir@${_STAGING_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh abdulgafurshaattir@${_STAGING_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no abdulgafurshaattir@${_STAGING_VM_IP} "bash /tmp/deploy.sh"
     id: deploy-staging
 
   # Step 4: Deploy to Production
@@ -36,9 +36,9 @@ steps:
         chmod 600 id_rsa
 
         echo "Deploying to production..."
-        scp -i id_rsa -o StrictHostKeyChecking=no index.html gafur@${_PROD_VM_IP}:/tmp/
-        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh gafur@${_PROD_VM_IP}:/tmp/
-        ssh -i id_rsa -o StrictHostKeyChecking=no gafur@${_PROD_VM_IP} "bash /tmp/deploy.sh"
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html abdulgafurshaattir@${_PROD_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh abdulgafurshaattir@${_PROD_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no abdulgafurshaattir@${_PROD_VM_IP} "bash /tmp/deploy.sh"
     id: deploy-prod
 
 # Define substitution variables (customize these per environment)
