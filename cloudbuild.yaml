@@ -6,7 +6,7 @@ steps:
 
   # Step 2: Copy files to archive
   - name: 'ubuntu'
-    args: ['tar', '-czf', 'website.tar.gz', 'index.html', 'deploy.sh']
+    args: ['tar', '-czf', 'website.tar.gz', 'index.html', 'deploy.sh', '*.html']
     id: 'archive'
 
   # Step 3: Deploy to Staging VM
