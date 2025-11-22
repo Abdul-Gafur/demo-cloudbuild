@@ -4,36 +4,42 @@ steps:
     args: ['bash', '-c', 'echo "Validating HTML files..." && ls -la *.html']
     id: 'validate'
 
-  # Step 2: Copy files to archive
+  # Step 2: Create archive
   - name: 'ubuntu'
     args: ['tar', '-czf', 'website.tar.gz', 'index.html', 'deploy.sh']
     id: 'archive'
 
-  # Step 3: Deploy to Staging VM
-  - name: 'ubuntu'
-    entrypoint: 'bash'
+  # Step 3: Deploy to Staging
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: bash
     args:
-      - '-c'
+      - -c
       - |
-        chmod 600 /workspace/id_rsa
-        echo "Deploying to staging..."
-        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no -r index.html deploy@${_STAGING_VM_IP}:/tmp/
-        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_STAGING_VM_IP}:/tmp/
-        ssh -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy@${_STAGING_VM_IP} 'bash /tmp/deploy.sh'
-    id: 'deploy-staging'
+        echo "Fetching SSH key..."
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > id_rsa
+        chmod 600 id_rsa
 
-  # Step 4: Deploy to Production VM
-  - name: 'ubuntu'
-    entrypoint: 'bash'
+        echo "Deploying to staging..."
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html deploy@${_STAGING_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_STAGING_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no deploy@${_STAGING_VM_IP} "bash /tmp/deploy.sh"
+    id: deploy-staging
+
+  # Step 4: Deploy to Production
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: bash
     args:
-      - '-c'
+      - -c
       - |
-        chmod 600 /workspace/id_rsa
+        echo "Fetching SSH key..."
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > id_rsa
+        chmod 600 id_rsa
+
         echo "Deploying to production..."
-        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no -r index.html deploy@${_PROD_VM_IP}:/tmp/
-        scp -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_PROD_VM_IP}:/tmp/
-        ssh -i /workspace/id_rsa -o StrictHostKeyChecking=no deploy@${_PROD_VM_IP} 'bash /tmp/deploy.sh'
-    id: 'deploy-prod'
+        scp -i id_rsa -o StrictHostKeyChecking=no index.html deploy@${_PROD_VM_IP}:/tmp/
+        scp -i id_rsa -o StrictHostKeyChecking=no deploy.sh deploy@${_PROD_VM_IP}:/tmp/
+        ssh -i id_rsa -o StrictHostKeyChecking=no deploy@${_PROD_VM_IP} "bash /tmp/deploy.sh"
+    id: deploy-prod
 
 # Define substitution variables (customize these per environment)
 substitutions:
