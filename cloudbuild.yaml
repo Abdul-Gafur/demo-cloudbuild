@@ -43,7 +43,7 @@ steps:
 
 # Define substitution variables (customize these per environment)
 substitutions:
-  _STAGING_VM_IP: '34.68.88.54'      # Replace with your staging VM IP
+  _STAGING_VM_IP: '136.114.30.253'      # Replace with your staging VM IP
   _PROD_VM_IP: '34.67.75.90'         # Replace with your production VM IP
   _DEPLOY_USER: 'deploy'          # SSH username
   _APP_PATH: '/var/www/html'      # Apache web root
